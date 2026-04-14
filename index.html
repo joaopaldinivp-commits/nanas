@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuestra Canción 💙</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: white;
+      text-align: center;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    
+    /* Fundo Espacial com Gradiente */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, #1a1a2e 0%, #000 70%);
+      z-index: -3;
+    }
+
+    /* Nova Animação de Estrelas "Voando" */
+    .estrela {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      z-index: -1;
+      animation: voar 4s linear infinite;
+    }
+
+    /* Estrelas com tamanhos e brilhos variados */
+    .estrela.p { width: 1px; height: 1px; }
+    .estrela.m { width: 2px; height: 2px; box-shadow: 0 0 5px rgba(255,255,255,0.8); }
+    .estrela.g { width: 3px; height: 3px; box-shadow: 0 0 8px rgba(255,255,255,1); }
+
+    /* Efeito de movimento espacial em nossa direção */
+    @keyframes voar {
+      0% {
+        transform: translateZ(0) translateY(0);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        transform: translateZ(100px) translateY(100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+    
+    #letra {
+      font-size: 36px; /* Aumentei um pouco */
+      margin: 20px;
+      min-height: 150px; /* Mais espaço para frases longas */
+      font-weight: bold;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 1);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      max-width: 85%;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Efeito de troca suave na frase */
+    #letra.fade {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    button {
+      padding: 18px 60px;
+      font-size: 26px;
+      cursor: pointer;
+      border-radius: 60px;
+      border: none;
+      background: #ff4d6d;
+      color: white;
+      box-shadow: 0 8px 30px rgba(255, 77, 109, 0.7);
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #ff758f;
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255, 77, 109, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <button id="btnPlay" onclick="tocarMusica()">Te dedico 💙</button>
+  
+  <div id="letra" class="fade"></div>
+
+  <audio id="musica" src="musica.mp3.mp3"></audio>
+
+  <script>
+    // Sincronização exata com EMOJIS adicionados
+    const letra = [
+      { tempo: 0,  texto: "Con flores 🌸🌼🌺" },
+      { tempo: 2,  texto: "Te llevaste mi tristeza ✨😢➡😊" },
+      { tempo: 4,  texto: "Con colores 🌈🎨" },
+      { tempo: 6,  texto: "Dibujaste la nobleza de la mano 👋🤝" },
+      { tempo: 11, texto: "A tu lado, creció nuestra ilusión 🌱💖" },
+      { tempo: 18, texto: "A ciegas 🙈🕶" },
+      { tempo: 20, texto: "Nos entregamos, aunque muitos se opusieran 🚫💑🚫" },
+      { tempo: 24, texto: "Disimulamos nuestro amor, nos inventamos 🤔🤫💕" },
+      { tempo: 28, texto: "En cada rincón 🏠🏢🌳" },
+      { tempo: 32, texto: "Nuestra canción 🎶💙💫" }
+    ];
+
+    const audio = document.getElementById("musica");
+    const divLetra = document.getElementById("letra");
+    const btn = document.getElementById("btnPlay");
+
+    function tocarMusica() {
+      audio.play().then(() => {
+        btn.style.display = "none";
+        iniciarSincronia();
+      }).catch(e => {
+        alert("Erro: Certifique-se de que o arquivo 'musica.mp3' está na pasta correta!");
+      });
+    }
+
+    function iniciarSincronia() {
+      // Checagem ultra-rápida (50ms)
+      setInterval(() => {
+        let tempoAtual = audio.currentTime;
+        let linha = letra.filter(l => tempoAtual >= l.tempo).pop();
+
+        if (linha && divLetra.innerText !== linha.texto) {
+          // Animação suave de troca
+          divLetra.classList.add('fade');
+          setTimeout(() => {
+            divLetra.innerText = linha.texto;
+            divLetra.classList.remove('fade');
+          }, 150); // Metade do tempo da transição CSS
+        }
+      }, 50);
+    }
+
+    // Gerar fundo de estrelas animadas
+    function criarEstrelas() {
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < 150; i++) {
+        const e = document.createElement("div");
+        e.className = "estrela";
+        
+        // Tamanhos aleatórios
+        const r = Math.random();
+        if (r < 0.6) e.classList.add('p');
+        else if (r < 0.9) e.classList.add('m');
+        else e.classList.add('g');
+
+        e.style.top = Math.random() * 100 + "vh";
+        e.style.left = Math.random() * 100 + "vw";
+        // Atrasos e durações diferentes para um efeito natural
+        e.style.animationDelay = Math.random() * 5 + "s";
+        e.style.animationDuration = (Math.random() * 3 + 3) + "s";
+        frag.appendChild(e);
+      }
+      document.body.appendChild(frag);
+    }
+
+    criarEstrelas();
+  </script>
+</body>
+</html>
